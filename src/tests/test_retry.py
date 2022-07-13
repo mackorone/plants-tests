@@ -30,13 +30,15 @@ class TestExternal(IsolatedAsyncioTestCase):
         with self.assertRaises(MyException):
             with retry(my_method, num_attempts=3, sleep_seconds=1.1) as func:
                 await func()
-        self.mock_sleep.assert_has_calls([mock.call(1.1)] * 2)
+        my_method.assert_has_calls([mock.call(), mock.call(), mock.call()])
+        self.mock_sleep.assert_has_calls([mock.call(1.1), mock.call(1.1)])
 
     async def test_success_on_first_attempt(self) -> None:
         my_method = mock.AsyncMock()
         my_method.return_value = None
         with retry(my_method, num_attempts=3, sleep_seconds=1) as func:
             await func()
+        my_method.assert_called_once_with()
         self.mock_sleep.assert_not_called()
 
     async def test_success_on_third_attempt(self) -> None:
@@ -50,4 +52,5 @@ class TestExternal(IsolatedAsyncioTestCase):
         )
         with retry(my_method, num_attempts=3, sleep_seconds=1.1) as func:
             await func()
-        self.mock_sleep.assert_has_calls([mock.call(1.1)] * 2)
+        my_method.assert_has_calls([mock.call(), mock.call(), mock.call()])
+        self.mock_sleep.assert_has_calls([mock.call(1.1), mock.call(1.1)])
