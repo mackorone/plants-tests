@@ -19,17 +19,23 @@ class TestFormat(IsolatedAsyncioTestCase):
         )
 
     def test_no_colors(self) -> None:
-        formatter = LogFormatter(colorize=False, escape_newlines=False)
+        formatter = LogFormatter(
+            colorize=False, escape_newlines=False, auto_indent=False
+        )
         content = formatter.format(self._record)
         self.assertTrue(content.endswith("[INFO] one\ntwo\nthree"))
 
     def test_escape_newlines(self) -> None:
-        formatter = LogFormatter(colorize=False, escape_newlines=True)
+        formatter = LogFormatter(
+            colorize=False, escape_newlines=True, auto_indent=False
+        )
         content = formatter.format(self._record)
         self.assertTrue(content.endswith("[INFO] one\\ntwo\\nthree"))
 
     def test_success(self) -> None:
-        formatter = LogFormatter(colorize=True, escape_newlines=False)
+        formatter = LogFormatter(
+            colorize=True, escape_newlines=False, auto_indent=False
+        )
         content = formatter.format(self._record)
         self.assertTrue(content.endswith("\u001b[92m[INFO]\u001b[0m one\ntwo\nthree"))
 
